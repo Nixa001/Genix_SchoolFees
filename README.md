@@ -1,7 +1,7 @@
 # Genix_SchoolFees
 
 
-GENIX PAYMENT  Application web de paiement frais scolaire. 
+GENIX SCHOOL FESS  Application web de paiement frais scolaire. 
 
 ~ Langages:	PHP, JavaScript, HTML & CSS
 ~ Framework:	Bootstrapp
