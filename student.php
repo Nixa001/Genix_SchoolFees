@@ -2,98 +2,88 @@
 include("php/dbconnect.php");
 include("php/checklogin.php");
 $errormsg = '';
-$action = "add";
+$action   = "add";
 
-$id="";
-$emailid='';
-$sname='';
+$id       = "";
+$emailid  = '';
+$sname    = '';
 $joindate = '';
-$remark='';
-$contact='';
-$balance = 0;
-$fees='';
-$about = '';
-$branch='';
+$remark   = '';
+$contact  = '';
+$balance  = 0;
+$fees     = '';
+$about    = '';
+$branch   = '';
 
 
-if(isset($_POST['save']))
-{
-
-$sname = mysqli_real_escape_string($conn,$_POST['sname']);
-$joindate = mysqli_real_escape_string($conn,$_POST['joindate']);
-
-$contact = mysqli_real_escape_string($conn,$_POST['contact']);
-$about = mysqli_real_escape_string($conn,$_POST['about']);
-$emailid = mysqli_real_escape_string($conn,$_POST['emailid']);
-$branch = mysqli_real_escape_string($conn,$_POST['branch']);
-
-
- if($_POST['action']=="add")
- {
- $remark = mysqli_real_escape_string($conn,$_POST['remark']);
- $fees = mysqli_real_escape_string($conn,$_POST['fees']);
- $advancefees = mysqli_real_escape_string($conn,$_POST['advancefees']);
- $balance = $fees-$advancefees;
- 
-  $q1 = $conn->query("INSERT INTO student (sname,joindate,contact,about,emailid,branch,balance,fees) VALUES ('$sname','$joindate','$contact','$about','$emailid','$branch','$balance','$fees')") ;
-  
-  $sid = $conn->insert_id;
-  
- $conn->query("INSERT INTO  fees_transaction (stdid,paid,submitdate,transcation_remark) VALUES ('$sid','$advancefees','$joindate','$remark')") ;
+if (isset($_POST['save'])) {
     
-   echo '<script type="text/javascript">window.location="student.php?act=1";</script>';
- 
- }else
-  if($_POST['action']=="update")
- {
- $id = mysqli_real_escape_string($conn,$_POST['id']);	
-   $sql = $conn->query("UPDATE  student  SET  branch  = '$branch', address  = '$address', detail  = '$detail'  WHERE  id  = '$id'");
-   echo '<script type="text/javascript">window.location="student.php?act=2";</script>';
- }
-
-
-
+    $sname    = mysqli_real_escape_string($conn, $_POST['sname']);
+    $joindate = mysqli_real_escape_string($conn, $_POST['joindate']);
+    
+    $contact = mysqli_real_escape_string($conn, $_POST['contact']);
+    $about   = mysqli_real_escape_string($conn, $_POST['about']);
+    $emailid = mysqli_real_escape_string($conn, $_POST['emailid']);
+    $branch  = mysqli_real_escape_string($conn, $_POST['branch']);
+    
+    
+    if ($_POST['action'] == "add") {
+        $remark      = mysqli_real_escape_string($conn, $_POST['remark']);
+        $fees        = mysqli_real_escape_string($conn, $_POST['fees']);
+        $advancefees = mysqli_real_escape_string($conn, $_POST['advancefees']);
+        $balance     = $fees - $advancefees;
+        
+        $q1 = $conn->query("INSERT INTO student (sname,joindate,contact,about,emailid,branch,balance,fees) VALUES ('$sname','$joindate','$contact','$about','$emailid','$branch','$balance','$fees')");
+        
+        $sid = $conn->insert_id;
+        
+        $conn->query("INSERT INTO  fees_transaction (stdid,paid,submitdate,transcation_remark) VALUES ('$sid','$advancefees','$joindate','$remark')");
+        
+        echo '<script type="text/javascript">window.location="student.php?act=1";</script>';
+        
+    } else if ($_POST['action'] == "update") {
+        $id  = mysqli_real_escape_string($conn, $_POST['id']);
+        $sql = $conn->query("UPDATE  student  SET  branch  = '$branch', address  = '$address', detail  = '$detail'  WHERE  id  = '$id'");
+        echo '<script type="text/javascript">window.location="student.php?act=2";</script>';
+    }
+    
+    
+    
 }
 
 
 
 
-if(isset($_GET['action']) && $_GET['action']=="delete"){
-
-$conn->query("UPDATE  student set delete_status = '1'  WHERE id='".$_GET['id']."'");	
-header("location: student.php?act=3");
-
+if (isset($_GET['action']) && $_GET['action'] == "delete") {
+    
+    $conn->query("UPDATE  student set delete_status = '1'  WHERE id='" . $_GET['id'] . "'");
+    header("location: student.php?act=3");
+    
 }
 
 
 $action = "add";
-if(isset($_GET['action']) && $_GET['action']=="edit" ){
-$id = isset($_GET['id'])?mysqli_real_escape_string($conn,$_GET['id']):'';
-
-$sqlEdit = $conn->query("SELECT * FROM student WHERE id='".$id."'");
-if($sqlEdit->num_rows)
-{
-$rowsEdit = $sqlEdit->fetch_assoc();
-extract($rowsEdit);
-$action = "update";
-}else
-{
-$_GET['action']="";
+if (isset($_GET['action']) && $_GET['action'] == "edit") {
+    $id = isset($_GET['id']) ? mysqli_real_escape_string($conn, $_GET['id']) : '';
+    
+    $sqlEdit = $conn->query("SELECT * FROM student WHERE id='" . $id . "'");
+    if ($sqlEdit->num_rows) {
+        $rowsEdit = $sqlEdit->fetch_assoc();
+        extract($rowsEdit);
+        $action = "update";
+    } else {
+        $_GET['action'] = "";
+    }
+    
 }
 
-}
 
-
-if(isset($_REQUEST['act']) && @$_REQUEST['act']=="1")
-{
-$errormsg = "<div class='alert alert-success'> <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Success!</strong> Ajout Validé</div>";
-}else if(isset($_REQUEST['act']) && @$_REQUEST['act']=="2")
-{
-$errormsg = "<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a> <strong>Success!</strong> Modification Validé</div>";
-}
-else if(isset($_REQUEST['act']) && @$_REQUEST['act']=="3")
-{
-$errormsg = "<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Success!</strong> Eléve Supprimer</div>";
+if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
+    $errormsg = "<div class='alert alert-success'> <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Success!</strong> Ajout Validé</div>";
+} else if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "2") {
+    $errormsg = "<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a> <strong>Success!</strong> Modification Validé</div>";
+} else if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "3") {
+    $errormsg = "<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Success!</strong> Eléve Supprimer</div>";
 }
 
 ?>
@@ -134,9 +124,8 @@ include("php/header.php");
                     <div class="col-md-12">
                         <h1 class="page-head-line">Eléves  
 						<?php
-						echo (isset($_GET['action']) && @$_GET['action']=="add" || @$_GET['action']=="edit")?
-						' <a href="student.php" class="btn btn-primary btn-sm pull-right">Back <i class="glyphicon glyphicon-arrow-right"></i></a>':'<a href="student.php?action=add" class="btn btn-primary btn-sm pull-right"><i class="glyphicon glyphicon-plus"></i> Add </a>';
-						?>
+echo (isset($_GET['action']) && @$_GET['action'] == "add" || @$_GET['action'] == "edit") ? ' <a href="student.php" class="btn btn-primary btn-sm pull-right">Back <i class="glyphicon glyphicon-arrow-right"></i></a>' : '<a href="student.php?action=add" class="btn btn-primary btn-sm pull-right"><i class="glyphicon glyphicon-plus"></i> Add </a>';
+?>
 						</h1>
                      
 <?php
@@ -148,10 +137,9 @@ echo $errormsg;
 				
 				
 				
-        <?php 
-		 if(isset($_GET['action']) && @$_GET['action']=="add" || @$_GET['action']=="edit")
-		 {
-		?>
+        <?php
+if (isset($_GET['action']) && @$_GET['action'] == "add" || @$_GET['action'] == "edit") {
+?>
 		
 			<script type="text/javascript" src="js/validation/jquery.validate.min.js"></script>
                 <div class="row">
@@ -159,7 +147,9 @@ echo $errormsg;
                     <div class="col-sm-10 col-sm-offset-1">
                <div class="panel panel-primary">
                         <div class="panel-heading">
-                           <?php echo ($action=="add")? "Add Student": "Edit Student"; ?>
+                           <?php
+    echo ($action == "add") ? "Add Student" : "Edit Student";
+?>
                         </div>
 						<form action="student.php" method="post" id="signupForm1" class="form-horizontal">
                         <div class="panel-body">
@@ -168,13 +158,17 @@ echo $errormsg;
 						<div class="form-group">
 								<label class="col-sm-2 control-label" for="Old">Nom* </label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="sname" name="sname" value="<?php echo $sname;?>"  />
+									<input type="text" class="form-control" id="sname" name="sname" value="<?php
+    echo $sname;
+?>"  />
 								</div>
 							</div>
 						<div class="form-group">
 								<label class="col-sm-2 control-label" for="Old">Contact* </label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="contact" name="contact" value="<?php echo $contact;?>" maxlength="10" />
+									<input type="text" class="form-control" id="contact" name="contact" value="<?php
+    echo $contact;
+?>" maxlength="10" />
 								</div>
 							</div>
 							
@@ -184,14 +178,13 @@ echo $errormsg;
 									<select  class="form-control" id="branch" name="branch" >
 									<option value="" >Select Classe</option>
                                     <?php
-									$sql = "select * from branch where delete_status='0' order by branch.branch asc";
-									$q = $conn->query($sql);
-									
-									while($r = $q->fetch_assoc())
-									{
-									echo '<option value="'.$r['id'].'"  '.(($branch==$r['id'])?'selected="selected"':'').'>'.$r['branch'].'</option>';
-									}
-									?>									
+    $sql = "select * from branch where delete_status='0' order by branch.branch asc";
+    $q   = $conn->query($sql);
+    
+    while ($r = $q->fetch_assoc()) {
+        echo '<option value="' . $r['id'] . '"  ' . (($branch == $r['id']) ? 'selected="selected"' : '') . '>' . $r['branch'] . '</option>';
+    }
+?>									
 									
 									</select>
 								</div>
@@ -201,7 +194,9 @@ echo $errormsg;
 						<div class="form-group">
 								<label class="col-sm-2 control-label" for="Old">DA* </label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="joindate" name="joindate" value="<?php echo  ($joindate!='')?date("Y-m-d", strtotime($joindate)):'';?>" style="background-color: #fff;" readonly />
+									<input type="text" class="form-control" id="joindate" name="joindate" value="<?php
+    echo ($joindate != '') ? date("Y-m-d", strtotime($joindate)) : '';
+?>" style="background-color: #fff;" readonly />
 								</div>
 							</div>
 						 </fieldset>
@@ -212,14 +207,17 @@ echo $errormsg;
 						<div class="form-group">
 								<label class="col-sm-2 control-label" for="Old">Total Payement* </label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="fees" name="fees" value="<?php echo $fees;?>" <?php echo ($action=="update")?"disabled":""; ?>  />
+									<input type="text" class="form-control" id="fees" name="fees" value="<?php
+    echo $fees;
+?>" <?php
+    echo ($action == "update") ? "disabled" : "";
+?>  />
 								</div>
 						</div>
 						
 						<?php
-						if($action=="add")
-						{
-						?>
+    if ($action == "add") {
+?>
 						<div class="form-group">
 								<label class="col-sm-2 control-label" for="Old">Avance Payement* </label>
 								<div class="col-sm-10">
@@ -227,13 +225,15 @@ echo $errormsg;
 								</div>
 						</div>
 						<?php
-						}
-						?>
+    }
+?>
 						
 						<div class="form-group">
 								<label class="col-sm-2 control-label" for="Old">Solde </label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control"  id="balance" name="balance" value="<?php echo $balance;?>" disabled />
+									<input type="text" class="form-control"  id="balance" name="balance" value="<?php
+    echo $balance;
+?>" disabled />
 								</div>
 						</div>
 						
@@ -241,18 +241,19 @@ echo $errormsg;
 						
 							
 							<?php
-						if($action=="add")
-						{
-						?>
+    if ($action == "add") {
+?>
 							<div class="form-group">
 								<label class="col-sm-2 control-label" for="Password">Description Payement </label>
 								<div class="col-sm-10">
-	                        <textarea class="form-control" id="remark" name="remark"><?php echo $remark;?></textarea >
+	                        <textarea class="form-control" id="remark" name="remark"><?php
+        echo $remark;
+?></textarea >
 								</div>
 							</div>
 						<?php
-						}
-						?>
+    }
+?>
 							
 							</fieldset>
 							
@@ -261,7 +262,9 @@ echo $errormsg;
 							<div class="form-group">
 								<label class="col-sm-2 control-label" for="Password">A Propos de l\'Eléve' </label>
 								<div class="col-sm-10">
-	                        <textarea class="form-control" id="about" name="about"><?php echo $about;?></textarea >
+	                        <textarea class="form-control" id="about" name="about"><?php
+    echo $about;
+?></textarea >
 								</div>
 							</div>
 							
@@ -269,15 +272,21 @@ echo $errormsg;
 								<label class="col-sm-2 control-label" for="Old">Email Id </label>
 								<div class="col-sm-10">
 									
-									<input type="text" class="form-control" id="emailid" name="emailid" value="<?php echo $emailid;?>"  />
+									<input type="text" class="form-control" id="emailid" name="emailid" value="<?php
+    echo $emailid;
+?>"  />
 								</div>
 						    </div>
 							</fieldset>
 						
 						<div class="form-group">
 								<div class="col-sm-8 col-sm-offset-2">
-								<input type="hidden" name="id" value="<?php echo $id;?>">
-								<input type="hidden" name="action" value="<?php echo $action;?>">
+								<input type="hidden" name="id" value="<?php
+    echo $id;
+?>">
+								<input type="hidden" name="action" value="<?php
+    echo $action;
+?>">
 								
 									<button type="submit" name="save" class="btn btn-primary">Enregistrer </button>
 								 
@@ -311,7 +320,9 @@ echo $errormsg;
 dateFormat:"yy-mm-dd",
 changeMonth: true,
 changeYear: true,
-yearRange: "2000:<?php echo date('Y');?>"
+yearRange: "2000:<?php
+    echo date('Y');
+?>"
 });	
 		
 
@@ -319,9 +330,9 @@ yearRange: "2000:<?php echo date('Y');?>"
 		if($("#signupForm1").length > 0)
          {
 		 
-		 <?php if($action=='add')
-		 {
-		 ?>
+		 <?php
+    if ($action == 'add') {
+?>
 		 
 			$( "#signupForm1" ).validate( {
 				rules: {
@@ -350,9 +361,8 @@ yearRange: "2000:<?php echo date('Y');?>"
 					
 				},
 			<?php
-			}else
-			{
-			?>
+    } else {
+?>
 			
 			$( "#signupForm1" ).validate( {
 				rules: {
@@ -372,8 +382,8 @@ yearRange: "2000:<?php echo date('Y');?>"
 			
 			
 			<?php
-			}
-			?>
+    }
+?>
 				
 				errorElement: "em",
 				errorPlacement: function ( error, element ) {
@@ -461,8 +471,8 @@ yearRange: "2000:<?php echo date('Y');?>"
 
 			   
 		<?php
-		}else{
-		?>
+} else {
+?>
 		
 		 <link href="css/datatable/datatable.css" rel="stylesheet" />
 		 
@@ -488,30 +498,29 @@ yearRange: "2000:<?php echo date('Y');?>"
                                     </thead>
                                     <tbody>
 									<?php
-									$sql = "select * from student where delete_status='0'";
-									$q = $conn->query($sql);
-									$i=1;
-									while($r = $q->fetch_assoc())
-									{
-									
-									echo '<tr '.(($r['balance']>0)?'class="danger"':'').'>
-                                            <td>'.$i.'</td>
-                                            <td>'.$r['sname'].'<br/>'.$r['contact'].'</td>
-                                            <td>'.date("d M y", strtotime($r['joindate'])).'</td>
-                                            <td>'.$r['fees'].'</td>
-											<td>'.$r['balance'].'</td>
+    $sql = "select * from student where delete_status='0'";
+    $q   = $conn->query($sql);
+    $i   = 1;
+    while ($r = $q->fetch_assoc()) {
+        
+        echo '<tr ' . (($r['balance'] > 0) ? 'class="danger"' : '') . '>
+                                            <td>' . $i . '</td>
+                                            <td>' . $r['sname'] . '<br/>' . $r['contact'] . '</td>
+                                            <td>' . date("d M y", strtotime($r['joindate'])) . '</td>
+                                            <td>' . $r['fees'] . '</td>
+											<td>' . $r['balance'] . '</td>
 											<td>
 											
 											
 
-											<a href="student.php?action=edit&id='.$r['id'].'" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-edit"></span></a>
+											<a href="student.php?action=edit&id=' . $r['id'] . '" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-edit"></span></a>
 											
-											<a onclick="return confirm(\'Are you sure you want to delete this record\');" href="student.php?action=delete&id='.$r['id'].'" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></a> </td>
+											<a onclick="return confirm(\'Are you sure you want to delete this record\');" href="student.php?action=delete&id=' . $r['id'] . '" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></a> </td>
 											
                                         </tr>';
-										$i++;
-									}
-									?>
+        $i++;
+    }
+?>
 									
                                         
                                         
@@ -538,8 +547,8 @@ yearRange: "2000:<?php echo date('Y');?>"
     </script>
 		
 		<?php
-		}
-		?>
+}
+?>
 				
 				
             
