@@ -30,8 +30,6 @@ $detail = mysqli_real_escape_string($conn,$_POST['detail']);
    echo '<script type="text/javascript">window.location="branch.php?act=2";</script>';
  }
 
-
-
 }
 
 
