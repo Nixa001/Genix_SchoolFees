@@ -88,6 +88,8 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 
 ?>
 
+
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -184,6 +186,7 @@ if (isset($_GET['action']) && @$_GET['action'] == "add" || @$_GET['action'] == "
     while ($r = $q->fetch_assoc()) {
         echo '<option value="' . $r['id'] . '"  ' . (($branch == $r['id']) ? 'selected="selected"' : '') . '>' . $r['branch'] . '</option>';
     }
+	
 ?>									
 									
 									</select>
