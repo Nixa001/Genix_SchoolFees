@@ -26,7 +26,7 @@ By #Nixa001
 	6- Open the link "http://localhost/Genix_SchoolFees" in the browser
 	
 
-	@Nixa001 ~ https://nicolasfaye.epizy.com	
+	@Nixa001 ~ 	
 	
 	User name: admin
 	Password: admin
